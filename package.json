@@ -69,8 +69,9 @@
 		"vite": "^7.3.0"
 	},
 	"dependencies": {
+		"@better-auth/core": "1.4.7",
 		"@umami/node": "^0.4.0",
-		"better-auth": "^1.4.7-beta.4",
+		"better-auth": "1.4.7",
 		"bits-ui": "^2.14.4",
 		"clsx": "^2.1.1",
 		"d3-scale": "^4.0.2",
