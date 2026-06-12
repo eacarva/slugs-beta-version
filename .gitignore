@@ -25,9 +25,6 @@ vite.config.ts.timestamp-*
 # Paraglide
 src/lib/paraglide
 
-# shadcn components
-src/lib/components/ui
-
 # dev specific
 .local-postgres
 .local-postgres.log
