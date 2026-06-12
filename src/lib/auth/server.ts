@@ -16,10 +16,10 @@ import { settings } from '$lib/server/settings';
 import { slugify } from '$lib/utils.js';
 import { APIError, betterAuth, generateId } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { createAuthMiddleware } from '@better-auth/core/api';
 import {
 	admin,
 	apiKey,
-	createAuthMiddleware,
 	genericOAuth,
 	type GenericOAuthConfig,
 	openAPI,
