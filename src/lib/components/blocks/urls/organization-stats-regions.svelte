@@ -56,7 +56,7 @@
 			(x) => x.region.toLowerCase() === 'other' || x.region === m.other()
 		);
 
-		if (otherIndex !== -1) {
+		if (otherIndex !== -1 && sorted.length > 1) {
 			sorted.splice(otherIndex, 1);
 		}
 

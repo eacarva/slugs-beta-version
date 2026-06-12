@@ -32,6 +32,8 @@ services:
       SLUGS_SMTP_USER: ${SLUGS_SMTP_USER:-}
       SLUGS_SMTP_PASS: ${SLUGS_SMTP_PASS:-}
       SLUGS_SMTP_FROM: ${SLUGS_SMTP_FROM:-}
+      SLUGS_MAXMIND_DB_PATH: ${SLUGS_MAXMIND_DB_PATH:-/app/config/maxmind/geolite2-city.mmdb}
+      MAXMIND_LICENSE_KEY: ${MAXMIND_LICENSE_KEY:-}
       PUBLIC_VERSION: ${PUBLIC_VERSION:-easypanel}
     ports:
       - '1000:1000'

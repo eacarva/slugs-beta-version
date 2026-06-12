@@ -19,6 +19,18 @@ const withTimeout = async <T>(promise: Promise<T>, ms: number) =>
 		new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
 	]);
 
+const getClientIp = (event: RequestEvent) => {
+	const forwardedFor = event.request.headers.get('x-forwarded-for');
+	const candidates = [
+		event.request.headers.get('cf-connecting-ip'),
+		event.request.headers.get('x-real-ip'),
+		forwardedFor?.split(',')[0],
+		event.getClientAddress()
+	];
+
+	return candidates.find((ip) => ip?.trim())?.trim();
+};
+
 const getUmami = async (event: RequestEvent) => {
 	const userAgent = event.request.headers.get('user-agent')?.toString();
 	const host = await getHost();
@@ -152,7 +164,7 @@ export const logVisit = async (event: RequestEvent, shortened: typeof schema.url
 		('PC' as DeviceType);
 
 	let city: string | undefined, country: string | undefined, region: string | undefined;
-	const realIp = event.request.headers.get('x-forwarded-for')?.toString();
+	const realIp = getClientIp(event);
 	const location = await getLocation(realIp);
 	if (location) ({ city, country, region } = location);
 	try {

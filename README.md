@@ -165,6 +165,8 @@ The metrics dashboard supports:
 - UTM key filtering + per-key value filtering
 - breakdowns (browsers, devices, OS, languages, referrers, countries, regions, cities, visitor organizations)
 
+Country, region and city breakdowns require a MaxMind GeoLite2 City `.mmdb` file. Set `MAXMIND_LICENSE_KEY` to download it automatically on startup, set `SLUGS_MAXMIND_DB_PATH`, or place the file at `config/maxmind/geolite2-city.mmdb`. Without it, visits are still tracked and grouped as `Other`.
+
 ## Integrations
 
 Integrations are configured **per host** (per domain).

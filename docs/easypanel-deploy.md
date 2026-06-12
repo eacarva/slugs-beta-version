@@ -86,6 +86,8 @@ SLUGS_SMTP_SECURE=false
 SLUGS_SMTP_USER=usuario
 SLUGS_SMTP_PASS=senha
 SLUGS_SMTP_FROM=no-reply@seudominio.com
+SLUGS_MAXMIND_DB_PATH=/app/config/maxmind/geolite2-city.mmdb
+MAXMIND_LICENSE_KEY=sua-chave-maxmind
 PUBLIC_VERSION=seu-build-ou-tag
 DEBUG=false
 ```
@@ -108,6 +110,26 @@ As variaveis `SLUGS_DISABLE_*`, `SLUGS_LIMIT_*` e `SLUGS_SMTP_*` sobrescrevem o 
 `PUBLIC_VERSION` aparece nos metadados/healthcheck quando configurado.
 
 `DEBUG=true` aumenta logs em alguns pontos. Evite manter ativo em producao.
+
+## GeoIP para metricas de paises, regioes e cidades
+
+As metricas de pais, regiao e cidade dependem de um banco MaxMind GeoLite2 City (`.mmdb`). Sem esse arquivo, as visitas continuam sendo registradas, mas a localizacao aparece como `Outro`.
+
+Se `MAXMIND_LICENSE_KEY` estiver configurada, o app baixa automaticamente o GeoLite2 City no startup quando o arquivo ainda nao existir. A chave pode ser gerada na conta MaxMind GeoLite2.
+
+Para usar arquivo manual, coloque o `.mmdb` em:
+
+```txt
+/app/config/maxmind/geolite2-city.mmdb
+```
+
+Esse caminho fica dentro do volume persistente `slugs_config`. Se usar outro local, defina:
+
+```env
+SLUGS_MAXMIND_DB_PATH=/caminho/para/geolite2-city.mmdb
+```
+
+O app nao baixa novamente se o arquivo ja existir no volume.
 
 ## Origem HTTPS e proxy
 

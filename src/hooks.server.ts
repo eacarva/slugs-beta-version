@@ -9,6 +9,7 @@ import { checkDatabaseConnection } from '$lib/server/db/health';
 import { member, organization, organizationRole, user as userTable } from '$lib/server/db/schema';
 import betterAuthHandle, { handle2fa } from '$lib/server/handles/better-auth.handle';
 import paraglideHandle from '$lib/server/handles/paraglide.handle';
+import { ensureMaxmindDatabase } from '$lib/server/maxmind/update';
 import { settings } from '$lib/server/settings';
 import { slugify } from '$lib/utils';
 import { generateId } from 'better-auth';
@@ -59,6 +60,13 @@ export const init = async () => {
 			'config/custom.css',
 			'/* Add custom styles for this Slugs instance. */'
 		);
+	}
+
+	try {
+		await ensureMaxmindDatabase();
+	} catch (error) {
+		console.error('[init] MaxMind GeoLite2 City download failed');
+		if (CONSTANTS.DEBUG) console.error(error);
 	}
 
 	const config = settings.get();
