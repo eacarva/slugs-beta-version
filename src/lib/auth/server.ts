@@ -12,6 +12,7 @@ import {
 	sendResetPasswordMail,
 	sendVerificationMail
 } from '$lib/server/email/auth/emails';
+import { readOAuthConfig } from '$lib/server/oauth';
 import { settings } from '$lib/server/settings';
 import { slugify } from '$lib/utils.js';
 import { APIError, betterAuth, generateId } from 'better-auth';
@@ -21,7 +22,6 @@ import {
 	admin,
 	apiKey,
 	genericOAuth,
-	type GenericOAuthConfig,
 	openAPI,
 	organization,
 	twoFactor,
@@ -29,7 +29,6 @@ import {
 } from 'better-auth/plugins';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { and, eq, isNotNull, sql } from 'drizzle-orm';
-import fs from 'node:fs/promises';
 
 import { ac, roles as r } from './permissions';
 
@@ -44,9 +43,7 @@ class AuthCache {
 export const authCache = new AuthCache();
 
 const createBetterAuthClient = async (host: THost) => {
-	const oauthConfig = JSON.parse(
-		await fs.readFile('config/oauth.json', 'utf8')
-	) as GenericOAuthConfig[];
+	const oauthConfig = await readOAuthConfig();
 
 	const hostId = slugify(host.origin);
 
