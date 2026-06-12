@@ -25,6 +25,7 @@ COPY --from=build /app/config ./config
 COPY --from=build /app/maxmind ./maxmind
 COPY --from=build /app/project.inlang ./project.inlang
 COPY --from=build /app/messages ./messages
+COPY --from=build /app/drizzle ./drizzle
 COPY --from=build /app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=build /app/src/lib/server/db ./src/lib/server/db
 COPY --from=build /app/static ./static
