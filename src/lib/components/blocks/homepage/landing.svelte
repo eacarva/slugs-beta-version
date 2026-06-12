@@ -1,8 +1,7 @@
 <script lang="ts">
-	import HeartIcon from '@lucide/svelte/icons/heart';
+	import BookOpenIcon from '@lucide/svelte/icons/book-open';
 	import UserRoundCheckIcon from '@lucide/svelte/icons/user-round-check';
 	import { resolve } from '$app/paths';
-	import arrow from '$lib/assets/arrow.svg?raw';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
@@ -18,42 +17,9 @@
 		<Button variant="outline" class="size-10! p-0 me-auto" href={resolve('/auth/sign-in')}>
 			<UserRoundCheckIcon class="size-5!" /></Button
 		>
-		<div class="h-10 relative flex gap-4 ms-auto">
-			<Button
-				variant="outline"
-				class="size-10! p-0"
-				href="https://github.com/urania-dev/slugs"
-				target="_blank"
-			>
-				<img
-					src="https://cdn.simpleicons.org/github/black"
-					class="size-5! dark:invert"
-					alt="github"
-				/></Button
-			>
-			<Button
-				target="_blank"
-				href="https://hub.docker.com/repository/docker/uraniadev/slugs"
-				variant="outline"
-				class="size-10! p-0"
-			>
-				<img
-					src="https://cdn.simpleicons.org/docker/black"
-					class="size-5! dark:invert"
-					alt="docker"
-				/></Button
-			>
-			<div
-				class="arrow scale-x-100 -scale-y-100 -rotate-35 w-25! h-20 text-sidebar-primary absolute -start-18 top-3"
-			>
-				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				{@html arrow}
-			</div>
-			<span
-				class="absolute top-16 -start-32 font-mono whitespace-nowrap text-secondary -rotate-25 text-center leading-none"
-				>{m.support_us()}</span
-			>
-		</div>
+		<Button variant="outline" class="size-10! p-0 ms-auto" href={resolve('/api/docs')}>
+			<BookOpenIcon class="size-5!" /></Button
+		>
 	</nav>
 	<div class="flex gap-4 pt-20 @lg:pt-30 w-full max-w-4xl mx-auto flex-col justify-start z-50">
 		<div class="flex shrink-0 flex-col max-w-max w-full gap-4 justify-center">
@@ -69,8 +35,8 @@
 			</p>
 		</div>
 		<div class="h-16 max-w-4xl w-full gap-4 mt-4 flex mb-10 mx-auto">
-			<Button href="https://slugs.urania.dev/docs" variant="outline">{m.documentation()}</Button>
-			<Button href="https://slugs.urania.dev/docs/getting-started">{m.getting_started()}</Button>
+			<Button href={resolve('/api/docs')} variant="outline">{m.documentation()}</Button>
+			<Button href={resolve('/auth/sign-up')}>{m.getting_started()}</Button>
 		</div>
 	</div>
 	<div class="py-4 pb-0 mt-auto relative max-w-max mx-auto">
@@ -105,9 +71,7 @@
 <div
 	class="fixed bottom-0 start-0 end-0 bg-linear-to-t from-background/90 to-transparent via-background/50 p-3"
 >
-	<Badge variant="outline" class="text-xs bg-muted rounded-md p-2"
-		>made with <HeartIcon class="text-secondary fill-current/20" /> urania.dev</Badge
-	>
+	<Badge variant="outline" class="text-xs bg-muted rounded-md p-2">{m.original_developer_credit()}</Badge>
 </div>
 
 <style>

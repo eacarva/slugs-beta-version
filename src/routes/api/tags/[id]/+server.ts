@@ -1,5 +1,5 @@
 import { error, json } from '@sveltejs/kit';
-import { defineEndpoint } from '@uraniadev/sveltekit-valibot-openapi';
+import { defineEndpoint } from '$lib/server/openapi';
 import { m } from '$lib/paraglide/messages';
 import { authenticateAPI } from '$lib/server/api/authenticate.js';
 import { CONSTANTS } from '$lib/server/const.js';

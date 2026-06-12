@@ -57,7 +57,7 @@ export const init = async () => {
 	if (!fs.existsSync('config/custom.css')) {
 		fs.writeFileSync(
 			'config/custom.css',
-			'/* Discover more at https://slugs.urania.dev/docs/styling */'
+			'/* Add custom styles for this Slugs instance. */'
 		);
 	}
 

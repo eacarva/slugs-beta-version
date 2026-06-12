@@ -4,7 +4,6 @@
 	import ComputerIcon from '@lucide/svelte/icons/computer';
 	import ContainerIcon from '@lucide/svelte/icons/container';
 	import CPUIcon from '@lucide/svelte/icons/cpu';
-	import GithubIcon from '@lucide/svelte/icons/github';
 	import HardDriveIcon from '@lucide/svelte/icons/hard-drive';
 	import LoaderIcon from '@lucide/svelte/icons/loader';
 	import MemoryStickIcon from '@lucide/svelte/icons/memory-stick';
@@ -16,7 +15,6 @@
 	import { env } from '$env/dynamic/public';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import { ButtonGroup } from '$lib/components/ui/button-group';
 	import * as Item from '$lib/components/ui/item';
 	import { m } from '$lib/paraglide/messages';
 	import { displaySize } from '$lib/utils';
@@ -215,34 +213,9 @@
 							<p class="w-full border-t p-2 text-xs @sm:w-max">
 								{m.stats_app_helper({ appname: info?.appname || 'Slugs' })}
 							</p>
-							<ButtonGroup class="xl:ms-auto">
-								<Button
-									variant="outline"
-									size="sm"
-									class="items-center gap-2 rounded-none "
-									href="https://github.com/urania-dev/slugs"
-									target="_blank"
-								>
-									<GithubIcon class="size-4!" />
-									<span class="@xl:text-xs tracking-wide">Github</span>
-								</Button>
-								<Button
-									href="https://hub.docker.com/r/uraniadev/slugs"
-									target="_blank"
-									variant="outline"
-									size="sm"
-									class="items-center gap-2 rounded-none"
-									>{@const url = 'url(https://cdn.simpleicons.org/docker/black)'}
-									<div
-										class=" flex h-4! w-4! shrink-0 bg-foreground"
-										style:mask="{url} no-repeat center / contain;"
-										style:-webkit-mask="{url} no-repeat center / contain;"
-									>
-										<span class="sr-only">docker</span>
-									</div>
-									<span class="@xl:text-xs tracking-wide">DockerHub</span>
-								</Button>
-							</ButtonGroup>
+							<p class="xl:ms-auto border-t p-2 text-xs @sm:w-max">
+								{m.original_developer_credit()}
+							</p>
 						</div>
 					</Item.Content>
 				</Item.Root>

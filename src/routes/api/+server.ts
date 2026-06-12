@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { defineEndpoint } from '@uraniadev/sveltekit-valibot-openapi';
+import { defineEndpoint } from '$lib/server/openapi';
 import { m } from '$lib/paraglide/messages';
 import { checkDatabaseConnection } from '$lib/server/db/health';
 import { literal, number, object, string, union } from 'valibot';

@@ -43,7 +43,6 @@
 		"@types/pg": "^8.16.0",
 		"@types/ua-parser-js": "^0.7.39",
 		"@typescript-eslint/parser": "^8.49.0",
-		"@uraniadev/sveltekit-valibot-openapi": "^0.1.29",
 		"drizzle-valibot": "^0.4.2",
 		"embla-carousel-svelte": "^8.6.0",
 		"eslint": "^9.39.2",

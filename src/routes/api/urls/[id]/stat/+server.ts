@@ -1,5 +1,5 @@
 import { error, json } from '@sveltejs/kit';
-import { defineEndpoint } from '@uraniadev/sveltekit-valibot-openapi';
+import { defineEndpoint } from '$lib/server/openapi';
 import { errors_unauthorized, m } from '$lib/paraglide/messages';
 import { hasPermission } from '$lib/remotes/auth.remote.js';
 import { UrlMetricsQuerySchema, UrlMetricsResponseSchema } from '$lib/schemas/metrics.schema';

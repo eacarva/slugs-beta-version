@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
-import { createOpenApiSpec, } from "@uraniadev/sveltekit-valibot-openapi";
+import { createOpenApiSpec, } from "$lib/server/openapi";
 import { m } from "$lib/paraglide/messages";
 import { getHost } from "$lib/remotes/config.remote";
 
