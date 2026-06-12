@@ -20,8 +20,5 @@ export default defineConfig({
 		watch: {
 			ignored: ['**/.local-postgres/**', '**/.local-postgres.log', '**/.local-vite.log', '**/build/**']
 		}
-	},
-	ssr: {
-		noExternal: ['better-auth', '@better-auth/core', '@better-auth/utils']
 	}
 });
