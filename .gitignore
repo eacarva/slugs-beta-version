@@ -33,7 +33,7 @@ src/lib/components/ui
 .local-postgres.log
 .local-vite.log
 .local-vite.pid
-config/settings.yaml
+#config/settings.yaml
 config/oauth.json
 
 maxmind/geolite2-city.mmdb
