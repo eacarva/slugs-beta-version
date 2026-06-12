@@ -10,7 +10,7 @@ RUN mkdir -p maxmind
 ENV PUBLIC_VERSION=beta-1.0.0
 ENV SLUGS_DEBUG=true
 
-RUN bun --bun run build
+RUN bun run build
 
 FROM node:22-alpine AS runner
 
