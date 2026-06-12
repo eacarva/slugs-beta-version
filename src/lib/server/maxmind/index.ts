@@ -15,9 +15,11 @@ async function getLocation(ip?: string) {
 		for (const path of getDatabasePaths()) {
 			try {
 				lookup = await maxmind.open(path);
+				console.log('[maxmind] GeoIP lookup loaded from %s', path);
 				break;
-			} catch {
-				// Try the next configured location.
+			} catch (error) {
+				console.warn('[maxmind] Could not open GeoIP database at %s', path);
+				if (process.env.SLUGS_DEBUG === 'true') console.warn(error);
 			}
 		}
 		if (!lookup) lookupFailed = true;

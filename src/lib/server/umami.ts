@@ -20,16 +20,45 @@ const withTimeout = async <T>(promise: Promise<T>, ms: number) =>
 	]);
 
 const getClientIp = (event: RequestEvent) => {
-	const forwardedFor = event.request.headers.get('x-forwarded-for');
+	const forwardedFor = event.request.headers
+		.get('x-forwarded-for')
+		?.split(',')
+		.map((ip) => ip.trim())
+		.filter(Boolean);
 	const candidates = [
 		event.request.headers.get('cf-connecting-ip'),
+		event.request.headers.get('true-client-ip'),
 		event.request.headers.get('x-real-ip'),
-		forwardedFor?.split(',')[0],
+		...(forwardedFor || []),
 		event.getClientAddress()
-	];
+	]
+		.map(normalizeIp)
+		.filter((ip): ip is string => Boolean(ip));
 
-	return candidates.find((ip) => ip?.trim())?.trim();
+	return candidates.find((ip) => !isPrivateIp(ip)) || candidates[0];
 };
+
+const normalizeIp = (value?: null | string) => {
+	if (!value) return;
+	const ip = value.trim();
+	if (!ip || ip.toLowerCase() === 'unknown') return;
+	if (ip.startsWith('[')) return ip.slice(1, ip.indexOf(']'));
+	const portIndex = ip.lastIndexOf(':');
+	if (portIndex > -1 && ip.indexOf(':') === portIndex && /^\d+$/.test(ip.slice(portIndex + 1))) {
+		return ip.slice(0, portIndex);
+	}
+	return ip;
+};
+
+const isPrivateIp = (ip: string) =>
+	ip === '::1' ||
+	ip.startsWith('127.') ||
+	ip.startsWith('10.') ||
+	ip.startsWith('192.168.') ||
+	ip.startsWith('169.254.') ||
+	/^172\.(1[6-9]|2\d|3[0-1])\./.test(ip) ||
+	/^f[cd][0-9a-f]{2}:/i.test(ip) ||
+	/^fe80:/i.test(ip);
 
 const getUmami = async (event: RequestEvent) => {
 	const userAgent = event.request.headers.get('user-agent')?.toString();

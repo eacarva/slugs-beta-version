@@ -40,10 +40,16 @@ const findFile = async (dir: string, filename: string): Promise<string | null> =
 
 export const ensureMaxmindDatabase = async () => {
 	const dbPath = getMaxmindDbPath();
-	if (await exists(dbPath)) return;
+	if (await exists(dbPath)) {
+		console.log('[maxmind] GeoLite2 City database found at %s', dbPath);
+		return;
+	}
 
 	const licenseKey = process.env.MAXMIND_LICENSE_KEY || process.env.SLUGS_MAXMIND_LICENSE_KEY;
-	if (!licenseKey) return;
+	if (!licenseKey) {
+		console.warn('[maxmind] GeoLite2 City database not found and MAXMIND_LICENSE_KEY is not set');
+		return;
+	}
 
 	const targetDir = path.dirname(dbPath);
 	const tempDir = path.join(targetDir, '.tmp');
@@ -70,6 +76,7 @@ export const ensureMaxmindDatabase = async () => {
 		const extractedPath = await findFile(tempDir, 'GeoLite2-City.mmdb');
 		if (!extractedPath) throw new Error('MaxMind archive did not contain GeoLite2-City.mmdb');
 		await fs.rename(extractedPath, dbPath);
+		console.log('[maxmind] GeoLite2 City database downloaded to %s', dbPath);
 	} finally {
 		await fs.rm(tempDir, { force: true, recursive: true });
 	}
