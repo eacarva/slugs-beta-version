@@ -1,0 +1,20 @@
+appname: Slugs
+admin:
+  - email: admin@example.org
+    username: admin
+hosts:
+  - options:
+      customRedirect: /dashboard
+      disable:
+        homepage: false
+        limits: false
+        lowerCaseFallback: true
+        signup: false
+        twoFactor: true
+      limits:
+        maxSlugsPerUser: 1000
+        requestsPerDay: 1000
+        requestsPerMinute: 60
+    origin: https://$(PRIMARY_DOMAIN)
+smtp:
+  enabled: false

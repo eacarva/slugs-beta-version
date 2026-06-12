@@ -1,0 +1,73 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://slugs:${SLUGS_DB_PASSWORD:-change-me}@postgres:5432/slugs
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-change-me}
+      SLUGS_APPNAME: ${SLUGS_APPNAME:-Slugs}
+      SLUGS_ORIGIN: ${SLUGS_ORIGIN:-http://localhost:1000}
+      SLUGS_DEBUG: ${SLUGS_DEBUG:-false}
+      SLUGS_ADMIN_EMAIL: ${SLUGS_ADMIN_EMAIL:-admin@example.org}
+      SLUGS_ADMIN_USERNAME: ${SLUGS_ADMIN_USERNAME:-admin}
+      SLUGS_BOOTSTRAP_ADMIN_TEMP_PASSWORD: ${SLUGS_BOOTSTRAP_ADMIN_TEMP_PASSWORD:-}
+      SLUGS_BOOTSTRAP_ADMIN_RESET: ${SLUGS_BOOTSTRAP_ADMIN_RESET:-false}
+      SLUGS_DISABLE_SIGNUP: ${SLUGS_DISABLE_SIGNUP:-false}
+      SLUGS_DISABLE_2FA: ${SLUGS_DISABLE_2FA:-true}
+      SLUGS_DISABLE_HOMEPAGE: ${SLUGS_DISABLE_HOMEPAGE:-false}
+      SLUGS_DISABLE_LIMITS: ${SLUGS_DISABLE_LIMITS:-false}
+      SLUGS_DISABLE_LOWER_CASE_FALLBACK: ${SLUGS_DISABLE_LOWER_CASE_FALLBACK:-true}
+      SLUGS_CUSTOM_REDIRECT: ${SLUGS_CUSTOM_REDIRECT:-/dashboard}
+      SLUGS_LIMIT_MAX_SLUGS_PER_USER: ${SLUGS_LIMIT_MAX_SLUGS_PER_USER:-1000}
+      SLUGS_LIMIT_REQUESTS_PER_DAY: ${SLUGS_LIMIT_REQUESTS_PER_DAY:-1000}
+      SLUGS_LIMIT_REQUESTS_PER_MINUTE: ${SLUGS_LIMIT_REQUESTS_PER_MINUTE:-60}
+      SLUGS_SMTP_ENABLED: ${SLUGS_SMTP_ENABLED:-false}
+      SLUGS_SMTP_HOST: ${SLUGS_SMTP_HOST:-}
+      SLUGS_SMTP_PORT: ${SLUGS_SMTP_PORT:-587}
+      SLUGS_SMTP_SECURE: ${SLUGS_SMTP_SECURE:-false}
+      SLUGS_SMTP_USER: ${SLUGS_SMTP_USER:-}
+      SLUGS_SMTP_PASS: ${SLUGS_SMTP_PASS:-}
+      SLUGS_SMTP_FROM: ${SLUGS_SMTP_FROM:-}
+      PUBLIC_VERSION: ${PUBLIC_VERSION:-easypanel}
+    ports:
+      - '1000:1000'
+    volumes:
+      - slugs_config:/app/config
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 768M
+        reservations:
+          memory: 256M
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: slugs
+      POSTGRES_USER: slugs
+      POSTGRES_PASSWORD: ${SLUGS_DB_PASSWORD:-change-me}
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U slugs -d slugs']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    volumes:
+      - slugs_postgres:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 768M
+        reservations:
+          memory: 256M
+
+volumes:
+  slugs_config:
+  slugs_postgres:
