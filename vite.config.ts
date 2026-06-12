@@ -22,6 +22,6 @@ export default defineConfig({
 		}
 	},
 	ssr: {
-		noExternal: ['better-auth']
+		noExternal: ['better-auth', '@better-auth/core', '@better-auth/utils']
 	}
 });
