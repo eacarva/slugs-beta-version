@@ -14,11 +14,12 @@ import {
 } from '$lib/server/email/auth/emails';
 import { settings } from '$lib/server/settings';
 import { slugify } from '$lib/utils.js';
-import { APIError, betterAuth, createAuthEndpoint, createMiddleware, generateId } from 'better-auth';
+import { APIError, betterAuth, generateId, } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import {
 	admin,
 	apiKey,
+	createAuthMiddleware,
 	genericOAuth,
 	type GenericOAuthConfig,
 	openAPI,
@@ -26,7 +27,6 @@ import {
 	twoFactor,
 	username
 } from 'better-auth/plugins';
-import { createAuthMiddleware } from '@better-auth/core/api';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { and, eq, isNotNull, sql } from 'drizzle-orm';
 import fs from 'node:fs/promises';
