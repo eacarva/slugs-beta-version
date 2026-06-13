@@ -26,6 +26,8 @@ SLUGS_BOOTSTRAP_ADMIN_TEMP_PASSWORD=senha-temporaria-forte
 
 Se voce criar um App Service normal apontando para o GitHub, o Easypanel builda o `dockerfile` do projeto, mas nao cria um Postgres automaticamente para este app. Nesse modo, crie o Postgres no painel e informe `DATABASE_URL`.
 
+O container da imagem de producao escuta na porta interna `1000`. Configure o app/proxy do Easypanel para encaminhar trafego para essa porta, ou use o compose abaixo, que ja expoe `1000:1000`.
+
 Para um deploy em estilo "mini app", com app e banco juntos, use o arquivo:
 
 ```text
@@ -39,6 +41,7 @@ Esse compose cria:
 - `slugs_postgres`: volume persistente do banco.
 - `slugs_config`: volume persistente de `/app/config`.
 - limites de CPU/memoria para reduzir risco de um container consumir a VM inteira.
+- porta interna/externa `1000` para o app.
 
 Variaveis recomendadas para esse compose:
 
@@ -172,6 +175,8 @@ volumes:
 
 No Easypanel, use um volume persistente apontando para `/app/config` se quiser que alteracoes feitas no app sobrevivam a redeploys.
 
+O `compose.easypanel.yaml` ja declara esse volume como `slugs_config`. Em App Service sem compose, crie o volume manualmente no painel antes de depender de alteracoes feitas pela UI.
+
 ## Banco e migracoes
 
 Na inicializacao, o app:
@@ -204,6 +209,7 @@ Se `DATABASE_URL` estiver ausente ou o banco estiver fora, o endpoint responde J
 - Definir `SLUGS_ORIGIN=https://$(PRIMARY_DOMAIN)`.
 - Definir `BETTER_AUTH_SECRET` fixo e longo.
 - Opcionalmente definir `SLUGS_APPNAME=$(PROJECT_NAME)`.
+- Confirmar que o proxy aponta para a porta interna `1000`.
 - Persistir `/app/config` se for editar settings pela UI.
 - Verificar `/api/live` para confirmar que o processo esta vivo.
 - Verificar `/api` para confirmar que o banco esta saudavel.

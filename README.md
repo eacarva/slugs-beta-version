@@ -38,8 +38,28 @@ If the user is not a member of that organization, access is denied (invitation f
 
 ### Requirements
 
+- Node.js 22+ for production-like runs
+- Bun for install/build/dev scripts used by this project
 - Postgres database
-- Docker (recommended)
+- Docker or Docker Compose (recommended for deployment/local database)
+
+### Environment
+
+Start from the example file:
+
+```sh
+cp .env.example .env
+```
+
+Required values:
+
+```env
+DATABASE_URL=postgres://slugs:strong-password@localhost:5432/slugs
+BETTER_AUTH_SECRET=change-this-to-a-long-random-value
+SLUGS_ORIGIN=http://localhost:5173
+```
+
+`SLUGS_ORIGIN` is used for auth, emails, organization bootstrap, and generated links. In hosted environments it can reference platform variables, for example `https://$(PRIMARY_DOMAIN)`.
 
 ### Easypanel / Oracle Cloud
 
@@ -63,10 +83,11 @@ services:
   slugs:
     image: uraniadev/slugs:latest
     ports:
-      - '3000:3000'
+      - '1000:1000'
     environment:
       DATABASE_URL: 'postgres://slugs:slugs_password@db:5432/slugs'
       BETTER_AUTH_SECRET: 'change-me'
+      SLUGS_ORIGIN: 'http://localhost:1000'
     volumes:
       - ./config:/app/config
     depends_on:
@@ -84,6 +105,8 @@ services:
 volumes:
   pgdata:
 ```
+
+The production image listens on port `1000` by default. If you deploy behind a reverse proxy, route external traffic to the container's `1000` port and set `SLUGS_ORIGIN` to the public HTTPS origin.
 
 ## Configuration
 
@@ -106,6 +129,29 @@ smtp:
   enabled: false
   # this will log outbound emails
 ```
+
+Runtime environment variables can override the first host and bootstrap admin without rebuilding the image. The most common overrides are:
+
+- `SLUGS_APPNAME`
+- `SLUGS_ORIGIN`
+- `SLUGS_ADMIN_EMAIL`
+- `SLUGS_ADMIN_USERNAME`
+- `SLUGS_BOOTSTRAP_ADMIN_TEMP_PASSWORD`
+- `SLUGS_BOOTSTRAP_ADMIN_RESET`
+- `SLUGS_DISABLE_SIGNUP`
+- `SLUGS_DISABLE_2FA`
+- `SLUGS_DISABLE_HOMEPAGE`
+- `SLUGS_DISABLE_LIMITS`
+- `SLUGS_DISABLE_LOWER_CASE_FALLBACK`
+- `SLUGS_CUSTOM_REDIRECT`
+- `SLUGS_LIMIT_MAX_SLUGS_PER_USER`
+- `SLUGS_LIMIT_REQUESTS_PER_DAY`
+- `SLUGS_LIMIT_REQUESTS_PER_MINUTE`
+- `SLUGS_SMTP_*`
+- `SLUGS_MAXMIND_DB_PATH`
+- `MAXMIND_LICENSE_KEY`
+
+See `.env.example` and [docs/easypanel-deploy.md](docs/easypanel-deploy.md) for a deploy-oriented list.
 
 ### Bootstrap behavior
 
@@ -204,6 +250,22 @@ thirdparty:
 
 ## API
 
+### Main endpoints
+
+- `GET /api` - readiness/health details, including database status
+- `GET /api/live` - liveness check that does not depend on the database
+- `GET /api/docs` - Scalar API reference UI
+- `GET /api/openapi.json` - Slugs OpenAPI schema
+- `GET /api/urls` / `POST /api/urls` - list and create short URLs
+- `GET /api/urls/:id` / `PATCH /api/urls/:id` / `DELETE /api/urls/:id` - inspect, update, and delete a URL
+- `GET /api/urls/:id/stat` - URL statistics
+- `PUT|PATCH|DELETE /api/urls/:id/tag` - manage URL tags
+- `PUT|PATCH|DELETE /api/urls/:id/teams` - manage URL team visibility
+- `GET /api/tags` / `POST /api/tags` - list and create tags
+- `GET /api/tags/:id` / `DELETE /api/tags/:id` - inspect and delete a tag
+- `GET /api/metrics` - metrics dashboard data
+- `POST /api/:shortcode` - API redirect lookup for a shortcode
+
 ### Scalar docs
 
 The API reference is served with Scalar at:
@@ -252,12 +314,49 @@ Typical stack:
 - Drizzle ORM
 - Better-Auth
 - Scalar API Reference UI
-- Oven Bun (but there has been some inconsistencies with layerchart, so we use node as for now).
+- Bun for dependency install and development commands
+- Node.js for the production runner (`scripts/start.mjs`)
 
-Run locally with a Postgres instance and set:
+Run a local database:
 
-- `DATABASE_URL`
-- `BETTER_AUTH_SECRET`
+```sh
+bun run db:start
+```
+
+The checked-in `compose.yaml` starts a Postgres instance on `localhost:5432` with:
+
+```env
+DATABASE_URL=postgres://root:mysecretpassword@localhost:5432/local
+```
+
+Then install dependencies and run the app:
+
+```sh
+bun install
+cp .env.example .env
+# edit DATABASE_URL, BETTER_AUTH_SECRET, and SLUGS_ORIGIN if needed
+bun run dev
+```
+
+Useful commands:
+
+```sh
+bun run check
+bun run lint
+bun run build
+bun run db:push
+bun run db:generate
+bun run db:migrate
+bun run db:studio
+```
+
+For a production-like local run:
+
+```sh
+bun run build
+npm install --omit=dev --legacy-peer-deps
+node ./scripts/start.mjs
+```
 
 ## License
 
