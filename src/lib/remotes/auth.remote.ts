@@ -223,7 +223,7 @@ export const saveAvatar = command(v.string(), async (file) => {
 
 	cleanupOrphanFolders('config/avatars');
 
-	return { filename: `/avatars/${filenameWithExt}` };
+	return { filename: `/avatars/${user.id}/${filenameWithExt}` };
 });
 
 export const updateProfileNotes = form(v.object({ notes: v.string() }), async ({ notes }) => {

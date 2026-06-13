@@ -45,6 +45,7 @@
 				await authClient.updateUser({
 					image
 				});
+				src = image;
 				await invalidateAll();
 				toast.success(m.profile_updated());
 			} catch (error) {
