@@ -6,7 +6,7 @@ import { CONSTANTS } from '$lib/server/const.js';
 import { db } from '$lib/server/db/index.js';
 import { metric } from '$lib/server/db/schema.js';
 import { fillMissingDays } from '$lib/utils.js';
-import { and, eq, gte, lte, sql } from 'drizzle-orm';
+import { and, eq, gte, lte, max, min, sql } from 'drizzle-orm';
 import * as v from 'valibot';
 
 export const load = async ({ locals: { user }, params: { id }, url }) => {
@@ -43,7 +43,7 @@ export const load = async ({ locals: { user }, params: { id }, url }) => {
 		}
 
 	const endDate = new Date();
-	endDate.setHours(23, 59, 59, 99);
+	endDate.setHours(23, 59, 59, 999);
 
 	const startDate = new Date(endDate);
 	startDate.setDate(endDate.getDate() - 7);
@@ -58,7 +58,30 @@ export const load = async ({ locals: { user }, params: { id }, url }) => {
 		)
 	});
 
-	const { from, to } = v.parse(ParamsSchema, Object.fromEntries(url.searchParams.entries()));
+	const hasDateFilter = url.searchParams.has('from') || url.searchParams.has('to');
+	let { from, to } = v.parse(ParamsSchema, Object.fromEntries(url.searchParams.entries()));
+
+	if (!hasDateFilter) {
+		const [range] = await db
+			.select({
+				first: min(metric.timestamp),
+				last: max(metric.timestamp)
+			})
+			.from(metric)
+			.where(eq(metric.urlId, short.id));
+
+		if (range?.first && range?.last) {
+			const first = new Date(range.first);
+			const last = new Date(range.last);
+			const minFrom = new Date(last);
+			minFrom.setDate(last.getDate() - 7);
+
+			from = first < minFrom ? first : minFrom;
+			from.setHours(0, 0, 0, 0);
+			to = last;
+			to.setHours(23, 59, 59, 999);
+		}
+	}
 
 	const rawStats = await db
 		.select({

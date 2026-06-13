@@ -134,7 +134,6 @@ export const fillMissingDays = (from: Date, to: Date, stats: { day: Date; visits
 };
 import type { AnyVisit } from './server/metrics/helpers';
 export const fillMissingDaysDivided = <T>(from: Date, to: Date, stats: T[]) => {
-	console.log({stats})
 	const map = new Map((stats as AnyVisit[]).map((s:AnyVisit) => [s.day.toDateString(), {...s, external:s.external, internal:s.internal}]));
 
 	const out: AnyVisit[] = [];
